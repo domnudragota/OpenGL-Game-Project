@@ -15,7 +15,7 @@ Window window("Game Engine", 800, 800);
 Camera camera;
 
 // Light properties
-glm::vec3 lightColor = glm::vec3(1.0f); //let the sun shine
+glm::vec3 lightColor = glm::vec3(1.0f); // let the sun shine
 glm::vec3 lightPos = glm::vec3(-180.0f, 100.0f, -200.0f);
 
 int main()
@@ -23,12 +23,9 @@ int main()
     glClearColor(0.2f, 0.8f, 1.0f, 1.0f);
 
     // Build and compile shaders
-    // 1) Original shader (no wave) for the box
     Shader shader("Shaders/vertex_shader.glsl", "Shaders/fragment_shader.glsl");
-    // 2) Sun shader for the light sphere
     Shader sunShader("Shaders/sun_vertex_shader.glsl", "Shaders/sun_fragment_shader.glsl");
-    // 3) Water shader (with wave logic in the vertex shader) for the plane
-    Shader waterShader("Shaders/water_vertex.glsl", "Shaders/fragment_shader.glsl");
+    Shader waterShader("Shaders/water_vertex.glsl", "Shaders/water_fragment.glsl");
 
     // Load some textures
     GLuint tex = loadBMP("Resources/Textures/wood.bmp");
@@ -37,7 +34,7 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
 
-    // A small quad mesh (not essential, just left in from your original code)
+    // A small quad mesh (not essential)
     std::vector<Vertex> vert;
     vert.push_back(Vertex());
     vert[0].pos = glm::vec3(10.5f, 10.5f, 0.0f);
@@ -64,7 +61,7 @@ int main()
     vert[3].normals = glm::normalize(glm::cross(
         vert[0].pos - vert[3].pos, vert[2].pos - vert[3].pos));
 
-    std::vector<int> ind = { 0,1,3, 1,2,3 };
+    std::vector<int> ind = { 0, 1, 3, 1, 2, 3 };
 
     std::vector<Texture> textures;
     textures.push_back(Texture());
@@ -101,7 +98,7 @@ int main()
         processKeyboardInput();
 
         {
-            float scaledTime = currentFrame * 0.1f;  // revolve slower
+            float scaledTime = currentFrame * 0.1f; // revolve slower
             lightPos.x = 150.0f * sin(scaledTime);
             lightPos.z = 150.0f * cos(scaledTime);
             lightPos.y = 100.0f; // keep same height
@@ -114,13 +111,11 @@ int main()
             90.0f,
             window.getWidth() * 1.0f / window.getHeight(),
             0.1f,
-            10000.0f
-        );
+            10000.0f);
         glm::mat4 ViewMatrix = glm::lookAt(
             camera.getCameraPosition(),
             camera.getCameraPosition() + camera.getCameraViewDirection(),
-            camera.getCameraUp()
-        );
+            camera.getCameraUp());
 
         GLuint MatrixID = glGetUniformLocation(sunShader.getId(), "MVP");
 
@@ -158,7 +153,7 @@ int main()
         // 3) Draw the plane with the WATER shader (wave logic)
         waterShader.use();
 
-        // Same lighting uniforms for the water fragment shader
+        // Pass lighting uniforms for the water fragment shader
         glUniform3f(glGetUniformLocation(waterShader.getId(), "lightColor"),
             lightColor.x, lightColor.y, lightColor.z);
         glUniform3f(glGetUniformLocation(waterShader.getId(), "lightPos"),
