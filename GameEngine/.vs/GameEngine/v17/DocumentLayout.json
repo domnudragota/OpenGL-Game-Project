@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\danne\\Desktop\\ACG\\Project\\OpenGL-Game-Project\\GameEngine\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|C:\\Users\\danne\\Desktop\\ACG\\Project\\OpenGL-Game-Project\\GameEngine\\GameEngine\\Camera\\camera.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\Camera\\camera.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|C:\\Users\\danne\\Desktop\\ACG\\Project\\OpenGL-Game-Project\\GameEngine\\GameEngine\\Shaders\\fragment_shader.glsl||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\Shaders\\fragment_shader.glsl||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|C:\\Users\\danne\\Desktop\\ACG\\Project\\OpenGL-Game-Project\\GameEngine\\GameEngine\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|C:\\Users\\danne\\Desktop\\ACG\\Project\\OpenGL-Game-Project\\GameEngine\\GameEngine\\Shaders\\fragment_shader.glsl||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\Shaders\\fragment_shader.glsl||{8B382828-6202-11D1-8870-0000F87579D2}"
+      "AbsoluteMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|C:\\Users\\danne\\Desktop\\ACG\\Project\\OpenGL-Game-Project\\GameEngine\\GameEngine\\Camera\\camera.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\Camera\\camera.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
@@ -32,7 +32,7 @@
               "RelativeDocumentMoniker": "GameEngine\\main.cpp",
               "ToolTip": "C:\\Users\\danne\\Desktop\\ACG\\Project\\OpenGL-Game-Project\\GameEngine\\GameEngine\\main.cpp",
               "RelativeToolTip": "GameEngine\\main.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAF8AAAAEAAAAAAAAAA==",
+              "ViewState": "AgIAAK0AAAAAAAAAAAAcwL4AAABMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-01-06T15:18:48.479Z",
               "IsPinned": true,
@@ -40,26 +40,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "camera.cpp",
               "DocumentMoniker": "C:\\Users\\danne\\Desktop\\ACG\\Project\\OpenGL-Game-Project\\GameEngine\\GameEngine\\Camera\\camera.cpp",
               "RelativeDocumentMoniker": "GameEngine\\Camera\\camera.cpp",
               "ToolTip": "C:\\Users\\danne\\Desktop\\ACG\\Project\\OpenGL-Game-Project\\GameEngine\\GameEngine\\Camera\\camera.cpp",
               "RelativeToolTip": "GameEngine\\Camera\\camera.cpp",
-              "ViewState": "AgIAADAAAAAAAAAAAAAAAAgAAAAZAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-01-06T17:49:01.814Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "fragment_shader.glsl",
               "DocumentMoniker": "C:\\Users\\danne\\Desktop\\ACG\\Project\\OpenGL-Game-Project\\GameEngine\\GameEngine\\Shaders\\fragment_shader.glsl",
               "RelativeDocumentMoniker": "GameEngine\\Shaders\\fragment_shader.glsl",
               "ToolTip": "C:\\Users\\danne\\Desktop\\ACG\\Project\\OpenGL-Game-Project\\GameEngine\\GameEngine\\Shaders\\fragment_shader.glsl",
               "RelativeToolTip": "GameEngine\\Shaders\\fragment_shader.glsl",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAAG4AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAEsAAAAAAAAAAAAIwFIAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
               "WhenOpened": "2025-01-06T15:41:27.671Z",
               "EditorCaption": ""

@@ -33,6 +33,8 @@ int main()
     GLuint tex = loadBMP("Resources/Textures/wood.bmp");
     GLuint tex2 = loadBMP("Resources/Textures/rock.bmp");
     GLuint tex3 = loadBMP("Resources/Textures/orange.bmp");
+    GLuint torchDiffuse = loadBMP("Resources/Textures/Diffuse.bmp");
+    GLuint torchEmission = loadBMP("Resources/Textures/Emission.bmp");
 
     glEnable(GL_DEPTH_TEST);
 
@@ -78,10 +80,6 @@ int main()
     textures3[0].type = "texture_diffuse";
 
 
-    
-    GLuint torchDiffuse = loadBMP("Resources/Textures/Diffuse.bmp");
-    GLuint torchEmission = loadBMP("Resources/Textures/Emission.bmp");
-
     std::vector<Texture> torchTextures;
     torchTextures.push_back(Texture());
     torchTextures[0].id = torchDiffuse;
@@ -106,7 +104,7 @@ int main()
     
 
 
-    // Main loop
+    // Rendering loop
     while (!window.isPressed(GLFW_KEY_ESCAPE) &&
         glfwWindowShouldClose(window.getWindow()) == 0)
     {
@@ -153,7 +151,7 @@ int main()
         // --- 2) Render the rest of the scene with both lights (sun + torch) ---
         shader.use();
 
-        // Pass both lights + camera position to the same fragment shader
+        // Pass both lights + camera position to the fragment shader
         glUniform3f(glGetUniformLocation(shader.getId(), "sunColor"), lightColor.x, lightColor.y, lightColor.z);
         glUniform3f(glGetUniformLocation(shader.getId(), "sunPos"), lightPos.x, lightPos.y, lightPos.z);
 
@@ -165,15 +163,53 @@ int main()
             camera.getCameraPosition().y,
             camera.getCameraPosition().z);
 
-        // -- Add: uniform for splitting flame vs. stick by Y --
-        // Adjust the cutoffY to match your torch's actual flame height
+        // Uniform for splitting flame vs. stick by Y (kept as-is)
         glUniform1f(glGetUniformLocation(shader.getId(), "flameCutoffY"), -13.0f);
 
-        // Get the matrix uniform locations once
         GLuint MatrixID2 = glGetUniformLocation(shader.getId(), "MVP");
         GLuint ModelMatrixID = glGetUniformLocation(shader.getId(), "model");
 
-        // --- Torch model ---
+        // --- Box with texture ---
+        // *Set useTorch to false (0) for non-torch objects*
+        glUniform1i(glGetUniformLocation(shader.getId(), "useTorch"), 0);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, tex);
+        glUniform1i(glGetUniformLocation(shader.getId(), "texture1"), 0);
+
+        ModelMatrix = glm::mat4(1.0f);
+        ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
+        MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+        glUniformMatrix4fv(MatrixID2, 1, GL_FALSE, &MVP[0][0]);
+        glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
+        box.draw(shader);
+
+        // --- Plane (darker ambient light) ---
+        float planeAmbientStrength = 0.2f; // Reduced ambient strength for plane
+        glUniform1f(glGetUniformLocation(shader.getId(), "ambientStrength"), planeAmbientStrength);
+
+        // Plane also uses the box/plane texture (so still useTorch = false)
+        glUniform1i(glGetUniformLocation(shader.getId(), "useTorch"), 0);
+
+        ModelMatrix = glm::mat4(1.0f);
+        ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, -20.0f, 0.0f));
+        MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+        glUniformMatrix4fv(MatrixID2, 1, GL_FALSE, &MVP[0][0]);
+        glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
+        plane.draw(shader);
+
+        // --- Torch with diffuse and emission textures ---
+        // *Set useTorch to true (1) for the torch*
+        glUniform1i(glGetUniformLocation(shader.getId(), "useTorch"), 1);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, torchDiffuse);
+        glUniform1i(glGetUniformLocation(shader.getId(), "diffuseMap"), 0);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, torchEmission);
+        glUniform1i(glGetUniformLocation(shader.getId(), "emissionMap"), 1);
+
         ModelMatrix = glm::mat4(1.0f);
         ModelMatrix = glm::translate(ModelMatrix, torchLightPos);
         ModelMatrix = glm::scale(ModelMatrix, glm::vec3(3.0f));
@@ -182,37 +218,13 @@ int main()
         glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
         torch.draw(shader);
 
-        // --- Box ---
-        ModelMatrix = glm::mat4(1.0f);
-        ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
-        MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-        glUniformMatrix4fv(MatrixID2, 1, GL_FALSE, &MVP[0][0]);
-        glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
-        box.draw(shader);
-
-        // --- Plane ---
-        ModelMatrix = glm::mat4(1.0f);
-        ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, -20.0f, 0.0f));
-        MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-        glUniformMatrix4fv(MatrixID2, 1, GL_FALSE, &MVP[0][0]);
-        glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
-        plane.draw(shader);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, torchDiffuse);
-
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, torchEmission);
-
-        // Then set shader uniforms if needed:
-        glUniform1i(glGetUniformLocation(shader.getId(), "diffuseMap"), 0);
-        glUniform1i(glGetUniformLocation(shader.getId(), "emissionMap"), 1);
-
-        // Finally draw the torch
-        torch.draw(shader);
-
+        // Update window
         window.update();
     }
+
+
+
+
     return 0;
 }
 
