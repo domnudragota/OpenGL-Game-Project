@@ -1,20 +1,13 @@
 #version 400
 
-in vec2 textureCoord; 
-in vec3 norm;
 in vec3 fragPos;
+in vec3 norm;
+in vec2 textureCoord;
 
 out vec4 fragColor;
 
-// Control whether to use torch-specific textures
-uniform bool useTorch;
-
-// --- General Textures ---
+// General texture
 uniform sampler2D texture1;
-
-// --- Torch Textures ---
-uniform sampler2D diffuseMap;
-uniform sampler2D emissionMap;
 
 // --- Sun (Light #1) ---
 uniform vec3 sunColor;
@@ -30,12 +23,13 @@ uniform float ambientStrength;
 
 void main()
 {
-    // ------------------------------
-    // 1) Lighting calculations (Sun + Torch)
+    // Normalize the normal
     vec3 normal = normalize(norm);
 
-    // Sun lighting (no attenuation)
-    float specularStrength = 0.7;
+    // ------------------------------------------------------
+    // 1) Sun lighting (directional or distant point with no attenuation)
+    // ------------------------------------------------------
+    float specularStrength = 0.5;  // Adjust as desired
     vec3 ambientSun = ambientStrength * sunColor;
 
     vec3 lightDirSun = normalize(sunPos - fragPos);
@@ -44,13 +38,15 @@ void main()
 
     vec3 viewDir = normalize(viewPos - fragPos);
     vec3 reflectDirSun = reflect(-lightDirSun, normal);
-    float specSun = pow(max(dot(viewDir, reflectDirSun), 0.0), 64);
+    float specSun = pow(max(dot(viewDir, reflectDirSun), 0.0), 32);
     vec3 specularSun = specularStrength * specSun * sunColor;
 
     vec3 sunResult = ambientSun + diffuseSun + specularSun;
 
-    // Torch lighting (point light with attenuation)
-    float torchAmbientStrength = 0.4;
+    // ------------------------------------------------------
+    // 2) Torch lighting (point light with attenuation)
+    // ------------------------------------------------------
+    float torchAmbientStrength = 0.4; // Or adjust to taste
     vec3 ambientTorch = torchAmbientStrength * torchColor;
 
     vec3 lightDirTorch = normalize(torchPos - fragPos);
@@ -58,47 +54,32 @@ void main()
     vec3 diffuseTorch = diffTorch * torchColor;
 
     vec3 reflectDirTorch = reflect(-lightDirTorch, normal);
-    float specTorch = pow(max(dot(viewDir, reflectDirTorch), 0.0), 64);
+    float specTorch = pow(max(dot(viewDir, reflectDirTorch), 0.0), 32);
     vec3 specularTorch = specularStrength * specTorch * torchColor;
 
+    // Basic attenuation
     float distanceTorch = length(torchPos - fragPos);
-    float constant = 1.0;
-    float linear = 0.05;
+    float constant  = 1.0;
+    float linear    = 0.05;
     float quadratic = 0.007;
-    float attenuation = 1.0 / (constant + linear * distanceTorch + quadratic * (distanceTorch * distanceTorch));
+    float attenuation = 1.0 / (constant + linear * distanceTorch +
+                               quadratic * distanceTorch * distanceTorch);
 
     vec3 torchResult = (ambientTorch + diffuseTorch + specularTorch) * attenuation;
 
-    // Combine sun and torch lighting
+    // ------------------------------------------------------
+    // 3) Combine Sun + Torch
+    // ------------------------------------------------------
     vec3 totalLight = sunResult + torchResult;
 
-    // ------------------------------
-    // 2) Texture sampling
-    vec4 sampledColor;
+    // ------------------------------------------------------
+    // 4) Sample the object's texture
+    // ------------------------------------------------------
+    vec4 texColor = texture(texture1, textureCoord);
 
-    if (!useTorch)
-    {
-        // For non-torch objects, use the general texture
-        sampledColor = texture(texture1, textureCoord);
-    }
-    else
-    {
-        // For torch objects, combine diffuse and emission textures
-        vec4 diffuseColor = texture(diffuseMap, textureCoord);
-        vec4 emissionColor = texture(emissionMap, textureCoord);
-
-        // Add emission color to the diffuse with a boost factor
-        float emissionBoost = 2.0; // Adjust as needed for brightness
-        sampledColor = diffuseColor + emissionColor * emissionBoost;
-    }
-
-    // Handle transparency: discard fragments with low alpha
-    if (sampledColor.a < 0.1)
-        discard;
-
-    // ------------------------------
-    // 3) Apply lighting to the texture color
-    vec3 finalColor = totalLight * sampledColor.rgb;
-
-    fragColor = vec4(finalColor, sampledColor.a);
+    // ------------------------------------------------------
+    // 5) Final fragment color
+    // ------------------------------------------------------
+    vec3 finalColor = totalLight * texColor.rgb;
+    fragColor = vec4(finalColor, texColor.a);
 }
